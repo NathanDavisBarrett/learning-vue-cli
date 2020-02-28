@@ -1,4 +1,4 @@
-# Learning the Vue CLI: Lesson 1: Installing and Using the Vue CLI
+# Lesson 1: Installing and Using the Vue CLI
 
 The first step is to install the Vue CLI using npm:
 
@@ -27,8 +27,8 @@ This is an interactive tool, so it will ask you a few questions:
 - _Please pick a preset_: Use the arrow and enter keys to choose **Manually
   select features**.
 
-- _Check the features needed for your project_: Use the arrow and space keys
-  to choose **Router** and **Vuex**. Press enter when you are done.
+- _Check the features needed for your project_: Babel and Linter/Formatter
+will be selected. Leave these selected and use the arrow and space keys to choose **Router**. Press enter when you are done.
 
 - _Use history mode for router?_: **Y**
 
@@ -43,7 +43,7 @@ This is an interactive tool, so it will ask you a few questions:
 
 - _Save this as a preset for future projects?_: **Y**
 
-- _Save preset as_: **Router + Vuex + ESLint**
+- _Save preset as_: Enter whatever name you like.
 
 It will then install a bunch of plugins for you.
 
@@ -53,10 +53,7 @@ After this completes, you will see these files and folders:
 
 - babel.config.js: configuration for babel, which compiles code for you
 
-- postcss.config.js: configuration for
-  tools that compile CSS
-
-- public: static files for your application, include a basic `index.html`. You can store images in a folder here if you like.
+- public: static files for your application, include a basic `index.html`. You can store images for your application here if you like.
 
 - src: JavaScript files you will write and other assets
 
@@ -68,9 +65,7 @@ Let's take a look at the src folder:
 
 - main.js -- configuration for your app
 
-- router.js -- configuration for Vue Router
-
-- store.js -- configuration for VueX
+- router -- configuration for Vue Router
 
 - assets -- images for your app
 

@@ -1,136 +1,10 @@
-# Learning Vue CLI: Lesson 3: Building an App
+# Lesson 3: Building an App
 
-Let's build the simple version of the help ticket application.
-
-## Back end
-
-First, install the packages we'll need for the server:
-
-```
-npm install express mongoose
-```
-
-Then, create a directory `server` in the top level of the project. Create a file in `server/server.js`:
-
-```
-const express = require('express');
-const bodyParser = require("body-parser");
-
-const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
-
-const mongoose = require('mongoose');
-
-// connect to the database
-mongoose.connect('mongodb://localhost:27017/tickets', {
-  useNewUrlParser: true
-});
-
-const tickets = require("./tickets.js");
-app.use("/api/tickets", tickets);
-
-app.listen(3000, () => console.log('Server listening on port 3000!'));
-```
-
-Then, create a file in `server/tickets.js` containing:x
-
-```
-const mongoose = require('mongoose');
-const express = require("express");
-const router = express.Router();
-
-//
-// Tickets
-//
-
-const ticketSchema = new mongoose.Schema({
-  name: String,
-  problem: String,
-});
-
-const Ticket = mongoose.model('Ticket', ticketSchema);
-
-router.get('/', async (req, res) => {
-  try {
-    let tickets = await Ticket.find();
-    return res.send(tickets);
-  } catch (error) {
-    console.log(error);
-    return res.sendStatus(500);
-  }
-});
-
-router.post('/', async (req, res) => {
-  const ticket = new Ticket({
-    name: req.body.name,
-    problem: req.body.problem
-  });
-  try {
-    await ticket.save();
-    return res.send(ticket);
-  } catch (error) {
-    console.log(error);
-    return res.sendStatus(500);
-  }
-});
-
-router.delete('/:id', async (req, res) => {
-  try {
-    await Ticket.deleteOne({
-      _id: req.params.id
-    });
-    return res.sendStatus(200);
-  } catch (error) {
-    console.log(error);
-    return res.sendStatus(500);
-  }
-});
-
-module.exports = router;
-```
-
-## Configuration
-
-When you use `npm run serve` with Vue CLI, it starts the webpack development server. This acts as the main web server for your application, which is the same role that nginx plays when you deploy the application.
-
-This means we need to configure the webpack development server to send any requests for your REST API (anything starting with `/api`), to the node server we'll be running.
-
-To do this, create a file called `vue.config.js` in the top level of your project directory. In this file, put the following:
-
-```
-module.exports = {
-  devServer: {
-    proxy: {
-      '^/api': {
-        target: 'http://localhost:3000',
-      },
-    }
-  }
-}
-```
-
-## Front End
-
-For the rest of this lesson, we will be modifying the front end. While we do this, run the back end with:
-
-```
-node server.js
-```
-
-Run the front end with:
-
-```
-npm run serve
-```
-
-This will let you visit the website at `localhost:8080`. You will notice that the website automatically reloads every time you edit a file that modifies the front end.
+Let's build a simple help ticket application.
 
 ## Title
 
-We want to change the title of our application and import the `axios` library. To do this, edit `public/index.html` and change the title:
+We want to change the title of our application. To do this, edit `public/index.html` and change the title:
 
 ```
 <title>Tickets</title>
@@ -202,23 +76,64 @@ If you check the browser, you should see the header:
 
 ![header](/screenshots/header.png)
 
+## Storing Tickets
+
+We will eventually be storing data on the back end in a database.
+Since we haven't gotten there yet, we'll store data and methods that
+operate on that data in a global data source in `main.js`:
+
+```
+let data = {
+  currentID: 2,
+  tickets: [{
+    id: 1,
+    problem: 'This app is not completely written yet.',
+    name: 'Emma'
+  }],
+  getTickets() {
+    return this.tickets;
+  },
+  addTicket(name, problem) {
+    this.tickets.push({
+      id: this.currentID,
+      name: name,
+      problem: problem
+    });
+    this.currentID += 1;
+  }
+}
+```
+
+The `getTickets` method will return the current list of tickets. The `addTicket`
+method will add a new ticket, incrementing `currentID` as needed.
+
+For the rest of the app to use this, we'll need to also modify `main.js` so that
+the Vue instance has a reference to this data:
+
+```
+
+new Vue({
+  router,
+  data: data,
+  render: h => h(App)
+}).$mount('#app')
+```
+
+Now we can refer to this data with `this.$route.$data` anywhere in our app.
+
 ## Viewing Tickets
 
 We want to show a list of all of the tickets on the home page.
 
-First, install the `axios` library:
+### Template for viewing tickets
 
-```
-npm install axios
-```
-
-First, modify the `template` section of `src/views/Home.vue`:
+Modify the `template` section of `src/views/Home.vue`:
 
 ```
 <template>
 <div>
   <h1>Current Tickets</h1>
-  <div v-for="ticket in tickets" v-bind:key="ticket._id">
+  <div v-for="ticket in tickets" v-bind:key="ticket.id">
     <hr>
     <div class="ticket">
       <div class="problem">
@@ -231,75 +146,64 @@ First, modify the `template` section of `src/views/Home.vue`:
 </template>
 ```
 
+The template assumes that the component will have a list of tickets
+in the `tickets` variable. It loops through these with the `v-for`
+directive. In this loop it uses `v-bind` to set a unique key for
+each ticket.
+
+Each ticket has:
+* id -- a unique id
+* problem -- a description of the problem
+* name -- the name of the person submitting the ticket
+
+We format all of these.
+
+### JavaScript for viewing tickets
+
 Likewise, modify the `script` section of `src/views/Home.vue`:
 
 ```
 <script>
-import axios from 'axios';
 export default {
   name: 'home',
   data() {
-    return {
-      tickets: []
+    return {}
+  },
+  computed: {
+    tickets() {
+      return this.$root.$data.getTickets();
     }
-  },
-  created() {
-    this.getTickets();
-  },
-  methods: {
-    async getTickets() {
-      try {
-        let response = await axios.get("/api/tickets");
-        this.tickets = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-    },
   }
 }
 </script>
 ```
 
-Notice that the `script` section contains the Vue code you are used to writing. It is mostly identical except:
+Notice that the `script` section contains the Vue code you are used to writing.
 
-- We use an import statement to import the `axios` library. Previously, we used a CDN for the this library and loaded it from a script tag in our HTML file. Because we installed it with npm, we can import it here, and then webpack will bundle it up when we distribute the application.
+This component does one simple thing -- it uses a computed property to get the
+list of tickets from the global Vue instance.
 
-- Instead of creating the Vue instance here (it is created in `main.js`), we use an export statement
-
-- The data must be a function with a return statement that returns a JavaScript object containing the data.
-
-Since we have not provided a way to create tickets yet, we can test it with:
-
-```
-curl -X POST -d '{"name": "Daniel", "problem": "not another ticket system?!"}' -H "Content-Type: application/json" localhost:3000/api/tickets
-```
-
-If you reload the web page for the app, you should see at least this newly created ticket, as well as any others left over in your database from previous activities.
+You should see the app display the one ticket that we hard coded:
 
 ![view tickets](/screenshots/view-tickets.png)
 
 ## Creating Tickets
 
-To create tickets, we will add a new page in the application. First, modify the navigation in `src/App.vue` to include a new link:
+To create tickets, we will add a new page in the application.
 
-```
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/create">New Ticket</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-```
+## New Component
 
-Notice that this link references a view at `/create`. You can create this component by creating a new file in `views/Create.vue`. Put this in the `template` section:
+First, create a new view/component by creating a new file in `views/Create.vue`.
+Put this in the `template` section:
 
 ```
 <template>
 <div>
   <h1>Create a Ticket</h1>
   <form v-if="creating" @submit.prevent="addTicket">
-    <input v-model="addedName" placeholder="Name">
+    <input v-model="name" placeholder="Name">
     <p></p>
-    <textarea v-model="addedProblem"></textarea>
+    <textarea v-model="problem"></textarea>
     <br />
     <button type="submit">Submit</button>
   </form>
@@ -311,45 +215,45 @@ Notice that this link references a view at `/create`. You can create this compon
 </template>
 ```
 
-This contains the form we have used previously. We have made one small change, which is to add a `v-if` directive to the form and use `v-else` to show a thank you message.
+This contains a form to create tickets. The form contains `@submit.prevent` to
+prevent the browser from submitting the form, and this also tells Vue to use an `addTicket`
+event handler to handle form submission. The form includes an input for the name
+of the person submitting the ticket, bound to `name`, and a problem description,
+bound to `problem`.
+
+We also include a `v-if` directive in the form and a `v-else` on a div.
+This uses the `creating` boolean variable to show the form if we are creating a ticket
+or hide it and show a thank you message after the new ticket is created.
 
 In the `script` section of this same file, add:
 
 ```
 <script>
-import axios from 'axios';
 export default {
   name: 'create',
   data() {
     return {
       creating: true,
-      addedName: '',
-      addedProblem: '',
+      name: '',
+      problem: '',
     }
   },
   methods: {
     toggleForm() {
       this.creating = !this.creating;
     },
-    async addTicket() {
-      try {
-        await axios.post("/api/tickets", {
-          name: this.addedName,
-          problem: this.addedProblem
-        });
-        this.addedName = "";
-        this.addedProblem = "";
-        this.creating = false;
-      } catch (error) {
-        console.log(error);
-      }
+    addTicket() {
+      this.$root.$data.addTicket(this.name, this.problem);
+      this.name = "";
+      this.problem = "";
+      this.creating = false;
     },
   }
 }
 </script>
 ```
 
-This code submits the form using the API for the server and toggles the `creating` variable to show either the form or the thank you message.
+This code submits the form using a method defined on our global data source and toggles the `creating` variable to show either the form or the thank you message.
 
 Finally, add some CSS that is specific to this view:
 
@@ -377,11 +281,11 @@ button {
 
 ## Router
 
-The last step is to setup the router to get to this page. In `src/router.js`
+The next step is to setup the router to get to this page. In `src/router/index.js`
 add this import:
 
 ```
-import Create from './views/Create.vue'
+import Create from '../views/Create.vue'
 ```
 
 and then add this route:
@@ -393,6 +297,21 @@ and then add this route:
       component: Create,
     }
 ```
+
+You can delete the route for `About` while you are there.
+
+## Navigation
+
+Finally, modify the navigation in `src/App.vue` to include a new link:
+
+```
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/create">New Ticket</router-link> |
+    </div>
+```
+
+Notice that this link references the path for `/create`.
 
 ## Results
 
