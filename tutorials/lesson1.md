@@ -1,9 +1,58 @@
 # Lesson 1: Installing and Using the Vue CLI
 
-The first step is to install the Vue CLI using npm:
+## Installing Node.js
+
+To use the Vue CLI you need to install Node.js. This is what we'll be using for the back end later.
+
+## For Mac and Linux users
+
+My preferred way to install node is to use
+[nvm](https://github.com/creationix/nvm). This lets you install
+multiple versions of node simultaneously, in case different apps need
+different versions. I don't usually need this, but I prefer nvm
+because it makes it easy for me to always get the latest stable
+versions of node and npm. It also installs into my local directory,
+rather than polluting the globally installed packages.
+
+**If you are on a Mac, be sure to first do this:**
+
+```
+touch ~/.bash_profile
+```
+
+To install nvm, visit the [nvm](https://github.com/creationix/nvm)
+web page and copy installation command that uses curl so you can have
+the latest version. For example:
+
+```
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+```
+
+Then close your terminal, open a new one, and type:
+
+```
+nvm install stable
+nvm use stable
+```
+
+You'll now be using the latest stable versions of node and npm. You
+will need to repeat `nvm use` each time you open a terminal.
+
+## For Windows Users
+
+If you use Windows, you can install Node.js by [directly downloading a package](https://nodejs.org/en/download/).
+
+## Installing Vue CLI
+
+Now you can install the Vue CLI using npm. If you are on Mac or Linux, make sure you have the latest version of node activated:
 
 ```
 nvm use stable
+```
+
+Everybody, including Mac, Linux and Windows users do this:
+
+```
 npm install -g @vue/cli
 ```
 
