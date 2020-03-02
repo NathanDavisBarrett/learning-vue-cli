@@ -4,7 +4,7 @@
 
 To use the Vue CLI you need to install Node.js. This is what we'll be using for the back end later.
 
-## For Mac and Linux users
+### For Mac and Linux users
 
 My preferred way to install node is to use
 [nvm](https://github.com/creationix/nvm). This lets you install
@@ -38,7 +38,7 @@ nvm use stable
 You'll now be using the latest stable versions of node and npm. You
 will need to repeat `nvm use` each time you open a terminal.
 
-## For Windows Users
+### For Windows Users
 
 If you use Windows, you can install Node.js by [directly downloading a package](https://nodejs.org/en/download/).
 
