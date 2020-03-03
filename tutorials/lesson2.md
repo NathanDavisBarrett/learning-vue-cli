@@ -65,8 +65,8 @@ route is loaded only when the page is visited.
 You can add an import statement:
 
 ```
-import Home from './views/Home.vue'
-import About from './views/About.vue'
+import Home from '../views/Home.vue'
+import About from '../views/About.vue'
 ```
 
 and modify the path for the `About` component:
