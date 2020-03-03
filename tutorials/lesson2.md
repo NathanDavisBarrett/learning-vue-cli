@@ -20,7 +20,7 @@ First, the URL is given to the Router in `src/router/index.js`:
 ```
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Home from '../views/Home.vue'
 
 Vue.use(Router)
 
