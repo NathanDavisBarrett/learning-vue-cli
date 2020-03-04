@@ -119,7 +119,7 @@ new Vue({
 }).$mount('#app')
 ```
 
-Now we can refer to this data with `this.$route.$data` anywhere in our app.
+Now we can refer to this data with `this.$root.$data` anywhere in our app.
 
 ## Viewing Tickets
 
