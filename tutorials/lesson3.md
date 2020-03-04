@@ -104,6 +104,8 @@ let data = {
 }
 ```
 
+** Be sure to put this above the Vue instance that is defined in this file.**
+
 The `getTickets` method will return the current list of tickets. The `addTicket`
 method will add a new ticket, incrementing `currentID` as needed.
 
