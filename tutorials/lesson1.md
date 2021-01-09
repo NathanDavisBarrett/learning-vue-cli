@@ -71,6 +71,12 @@ Now that the Vue CLI is installed, we can create a new project:
 vue create learning-vue-cli
 ```
 
+If you are a Windows user, with Git Bash, you may need to instead use this command:
+
+```
+winpty vue.cmd create learning-vue-cli
+```
+
 This is an interactive tool, so it will ask you a few questions:
 
 - _Please pick a preset_: Use the arrow and enter keys to choose **Manually
