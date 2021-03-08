@@ -17,8 +17,10 @@ rather than polluting the globally installed packages.
 **If you are on a Mac, be sure to first do this:**
 
 ```
-touch ~/.bash_profile
+touch ~/.zshrc
 ```
+
+(Most Macs use zsh these days. if you are using bash, then touch ~/.bash_profile instead.)
 
 To install nvm, visit the [nvm](https://github.com/creationix/nvm)
 web page and copy installation command that uses curl so you can have
@@ -37,6 +39,13 @@ nvm use stable
 
 You'll now be using the latest stable versions of node and npm. You
 will need to repeat `nvm use` each time you open a terminal.
+
+If you get an error indicating that the `nvm` command is not found, then be sure these lines are in your .zshrc (or .bash_profile) and then open a new terminal:
+
+```bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+```
 
 ### For Windows Users
 
