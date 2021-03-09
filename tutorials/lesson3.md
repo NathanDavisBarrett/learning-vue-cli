@@ -76,6 +76,8 @@ If you check the browser, you should see the header:
 
 ![header](/screenshots/header.png)
 
+If none of your changes are showing up be sure to restart your server and clear the cache on your browser.
+
 ## Storing Tickets
 
 We will eventually be storing data on the back end in a database.
