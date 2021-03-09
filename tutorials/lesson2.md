@@ -127,7 +127,7 @@ This again has a `template` section for the HTML. It references an image in the 
 In the `script` section, this view imports a component from `src/components` called `HelloWorld.vue`. A component is a self-contained piece of your application. A view is just a component that is used as the entry for
 a route.
 
-The `HelloWorld` component lets us access thios component with the `<HelloWorld>` element in the template. We pass data to the component using attributes, such as the `msg` attribute.
+The `HelloWorld` component lets us access this component with the `<HelloWorld>` element in the template. We pass data to the component using attributes, such as the `msg` attribute.
 
 The `default` section of the `script` contains the name of the view and the components it uses.
 
