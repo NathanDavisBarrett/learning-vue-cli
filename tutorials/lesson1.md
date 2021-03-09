@@ -94,6 +94,8 @@ This is an interactive tool, so it will ask you a few questions:
 - _Check the features needed for your project_: Babel and Linter/Formatter
 will be selected. Leave these selected and use the arrow and space keys to choose **Router**. Press enter when you are done.
 
+- _If there is an option to "choose a version of Vue.js that you want to start the project with" be sure to select **v.2**.
+
 - _Use history mode for router?_: **Y**
 
 - _Pick a linter / formatter config_: Choose **ESLint with error prevention
