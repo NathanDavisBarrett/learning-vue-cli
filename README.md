@@ -2,7 +2,7 @@
 
 In this set of lessons, you will learn about the [Vue
 CLI](https://cli.vuejs.org/) tool. This tool helps you to scaffold and prototype
-new projects in Vue. In particular, the tool makes it easier to use:
+new projects in Vue. In particular, the tool makes it easier to use: 
 
 - [Vue Single File Components](https://vuejs.org/v2/guide/single-file-components.html),
   which let you put all your code -- HTML, CSS, and JavaScript -- for a single
